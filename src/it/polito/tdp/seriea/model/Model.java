@@ -14,7 +14,7 @@ public class Model {
 	// idMap e liste;
 	private List <Team> listaT;
 	private List <Match> listaM;
-	
+	private List <DefaultWeightedEdge> usati;
 	private  SerieADAO dao;
 	private Map <String,Team> mappaT;
 	public Model() {
@@ -81,7 +81,7 @@ public class Model {
     public List<DefaultWeightedEdge> trovaSequenza(Team team){
     	List <DefaultWeightedEdge> parziale = new LinkedList<>();
     	List <DefaultWeightedEdge> finale = new LinkedList<>();
-    	int livello =0;
+    	usati = new LinkedList <>();
 //    	parziale.add(grafo.getEdge(team, Graphs.neighborListOf(grafo, team).get(0)));
     	cerca (parziale, finale, team);
     	return finale;
@@ -102,7 +102,7 @@ public class Model {
 		
 		for (DefaultWeightedEdge e : dwe) {
 			if (parziale.size()==0) {
-				if (grafo.containsEdge(team, grafo.getEdgeSource(e)) && grafo.getEdgeWeight(grafo.getEdge(team, grafo.getEdgeSource(e)))==1.0) {
+				if (!usati.contains(e) && grafo.containsEdge(team, grafo.getEdgeSource(e)) && grafo.getEdgeWeight(grafo.getEdge(team, grafo.getEdgeSource(e)))==1.0) {
 					 parziale.add(e);
 		    		  cerca(parziale, finale, team);
 		    		  parziale.remove(parziale.size()-1);
