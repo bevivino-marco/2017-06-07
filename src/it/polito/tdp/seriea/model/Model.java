@@ -83,14 +83,22 @@ public class Model {
     	List <DefaultWeightedEdge> finale = new LinkedList<>();
     	usati = new LinkedList <>();
 //    	parziale.add(grafo.getEdge(team, Graphs.neighborListOf(grafo, team).get(0)));
-    	cerca (parziale, finale, team);
+    	for (Team init : grafo.vertexSet()) {
+    	    if (init.equals(team)) {}else {
+    	    parziale.add(grafo.getEdge(team, init));
+    		cerca (parziale, finale, init);
+    		parziale.remove(parziale.size()-1);
+    	    
+    	    }
+    	}
+    	
     	return finale;
     }
 	private void cerca(List<DefaultWeightedEdge> parziale, List<DefaultWeightedEdge> finale, Team team) {
-		Set <DefaultWeightedEdge> dwe = new HashSet<>();
+		/*Set <DefaultWeightedEdge> dwe = new HashSet<>();
 	
 		dwe.addAll(grafo.edgeSet());
-		dwe.removeAll(parziale);
+		dwe.removeAll(parziale);*/
 		if (parziale.size()>finale.size()) {
 			finale.clear();
 			finale.addAll(parziale);
@@ -100,27 +108,21 @@ public class Model {
 		
 		
 		
-		for (DefaultWeightedEdge e : dwe) {
-			if (parziale.size()==0) {
-				if (!usati.contains(e) && grafo.containsEdge(team, grafo.getEdgeSource(e)) && grafo.getEdgeWeight(grafo.getEdge(team, grafo.getEdgeSource(e)))==1.0) {
-					 parziale.add(e);
-		    		  cerca(parziale, finale, team);
-		    		  parziale.remove(parziale.size()-1);
-				}
-			}else {
+		for (DefaultWeightedEdge e : grafo.edgesOf(team)) {
 			DefaultWeightedEdge last = parziale.get(parziale.size()-1);
 			
-		      if (!parziale.contains(e) && grafo.getEdgeTarget(last).equals(grafo.getEdgeSource(e))) {
+		      if (!usati.contains(e) && !parziale.contains(e) && grafo.getEdgeTarget(last).equals(grafo.getEdgeSource(e))) {
 		    	  double peso = grafo.getEdgeWeight(e);
 		    	  if (peso==1) {
 		    		  parziale.add(e);
-		    		  System.out.println(parziale.toString());
-		    		  cerca(parziale, finale, team);
+					  usati.add(e);
+		    		  cerca(parziale, finale, grafo.getEdgeTarget(e) );
+		    		  usati.remove(usati.size()-1);
 		    		  parziale.remove(parziale.size()-1);
 		    		 
 		    	  }
 		        }
-		      }	
+		      	
 		}
 		
 		
